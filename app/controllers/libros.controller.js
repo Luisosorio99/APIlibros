@@ -1,24 +1,25 @@
 const db = require('../config/db.config.js');
-const Libros = db.Libros;
+const Proyectos = db.Proyectos;
 
-// Crear un nuevo libro
+// Crear un nuevo proyecto
 exports.create = (req, res) => {
-    let libro = {};
+    let proyecto = {};
 
     try {
-        libro.Titulo = req.body.Titulo;
-        libro.Id_autor = req.body.Id_autor;
-        libro.Isbn = req.body.Isbn;
-        libro.Editorial = req.body.Editorial;
-        libro.Año_publicacion = req.body.Año_publicacion;
-        libro.Categoría = req.body.Categoría;
-        libro.Cantidad_disponible = req.body.Cantidad_disponible;
-        libro.Ubicacion = req.body.Ubicacion;
+        proyecto.titulo = req.body.titulo;
+        proyecto.descripcion = req.body.descripcion;
+        proyecto.completada = req.body.completada || false;
+        proyecto.fecha_creacion = new Date(); // Fecha actual
+        proyecto.fecha_vencimiento = req.body.fecha_vencimiento;
+        proyecto.prioridad = req.body.prioridad || 'media';
+        proyecto.asignado_a = req.body.asignado_a;
+        proyecto.categoria = req.body.categoria;
+        proyecto.costo_proyecto = req.body.costo_proyecto;
 
-        Libros.create(libro).then(result => {
+        Proyectos.create(proyecto).then(result => {
             res.status(200).json({
-                message: "Libro creado exitosamente con ID = " + result.Id_libro,
-                libro: result,
+                message: "Proyecto creado exitosamente con ID = " + result.id,
+                proyecto: result,
             });
         });
     } catch (error) {
@@ -29,13 +30,13 @@ exports.create = (req, res) => {
     }
 }
 
-// Recuperar todos los libros
-exports.retrieveAllLibros = (req, res) => {
-    Libros.findAll()
-        .then(libroInfos => {
+// Recuperar todos los proyectos
+exports.retrieveAllProyectos = (req, res) => {
+    Proyectos.findAll()
+        .then(proyectoInfos => {
             res.status(200).json({
-                message: "Obtención de todos los libros exitosa!",
-                libros: libroInfos
+                message: "Obtención de todos los proyectos exitosa!",
+                proyectos: proyectoInfos
             });
         })
         .catch(error => {
@@ -46,19 +47,19 @@ exports.retrieveAllLibros = (req, res) => {
         });
 }
 
-// Obtener un libro por su ID
-exports.getLibroById = (req, res) => {
-    let libroId = req.params.id;
-    Libros.findByPk(libroId)
-        .then(libro => {
-            if (libro) {
+// Obtener un proyecto por su ID
+exports.getProyectoById = (req, res) => {
+    let proyectoId = req.params.id;
+    Proyectos.findByPk(proyectoId)
+        .then(proyecto => {
+            if (proyecto) {
                 res.status(200).json({
-                    message: "Libro obtenido con éxito con ID = " + libroId,
-                    libro: libro
+                    message: "Proyecto obtenido con éxito con ID = " + proyectoId,
+                    proyecto: proyecto
                 });
             } else {
                 res.status(404).json({
-                    message: "No se encontró el libro con ID = " + libroId,
+                    message: "No se encontró el proyecto con ID = " + proyectoId,
                     error: "404"
                 });
             }
@@ -71,72 +72,72 @@ exports.getLibroById = (req, res) => {
         });
 }
 
-// Actualizar un libro por su ID
+// Actualizar un proyecto por su ID
 exports.updateById = async (req, res) => {
     try {
-        let libroId = req.params.id;
-        let libro = await Libros.findByPk(libroId);
+        let proyectoId = req.params.id;
+        let proyecto = await Proyectos.findByPk(proyectoId);
 
-        if (!libro) {
+        if (!proyecto) {
             res.status(404).json({
-                message: "No se encontró el libro con ID = " + libroId,
+                message: "No se encontró el proyecto con ID = " + proyectoId,
                 error: "404"
             });
         } else {
             let updatedObject = {
-                Titulo: req.body.Titulo,
-                Id_autor: req.body.Id_autor,
-                Isbn: req.body.Isbn,
-                Editorial: req.body.Editorial,
-                Año_publicacion: req.body.Año_publicacion,
-                Categoría: req.body.Categoría,
-                Cantidad_disponible: req.body.Cantidad_disponible,
-                Ubicacion: req.body.Ubicacion
+                titulo: req.body.titulo,
+                descripcion: req.body.descripcion,
+                completada: req.body.completada,
+                fecha_vencimiento: req.body.fecha_vencimiento,
+                prioridad: req.body.prioridad,
+                asignado_a: req.body.asignado_a,
+                categoria: req.body.categoria,
+                costo_proyecto: req.body.costo_proyecto
             };
 
-            let result = await Libros.update(updatedObject, { returning: true, where: { Id_libro: libroId } });
+            let result = await Proyectos.update(updatedObject, { returning: true, where: { id: proyectoId } });
 
             if (!result || result[0] === 0) {
                 res.status(500).json({
-                    message: "Error -> No se pudo actualizar el libro con ID = " + libroId,
+                    message: "Error -> No se pudo actualizar el proyecto con ID = " + proyectoId,
                     error: "No se actualizó"
                 });
             } else {
                 res.status(200).json({
-                    message: "Libro actualizado exitosamente con ID = " + libroId,
-                    libro: updatedObject
+                    message: "Proyecto actualizado exitosamente con ID = " + proyectoId,
+                    proyecto: updatedObject
                 });
             }
         }
     } catch (error) {
         res.status(500).json({
-            message: "Error -> No se pudo actualizar el libro con ID = " + req.params.id,
+            message: "Error -> No se pudo actualizar el proyecto con ID = " + req.params.id,
             error: error.message
         });
     }
 }
 
-// Eliminar un libro por su ID
+// Eliminar un proyecto por su ID
 exports.deleteById = async (req, res) => {
     try {
-        let libroId = req.params.id;
-        let libro = await Libros.findByPk(libroId);
+        let proyectoId = req.params.id;
+        let proyecto = await Proyectos.findByPk(proyectoId);
 
-        if (!libro) {
+        if (!proyecto) {
             res.status(404).json({
-                message: "No existe un libro con ID = " + libroId,
+                message: "No existe un proyecto con ID = " + proyectoId,
                 error: "404"
             });
         } else {
-            await libro.destroy();
+            await proyecto.destroy();
             res.status(200).json({
-                message: "Libro eliminado exitosamente con ID = " + libroId,
-                libro: libro
+                message: "Proyecto eliminado exitosamente con ID = " + proyectoId,
+                proyecto: proyecto
             });
         }
     } catch (error) {
         res.status(500).json({
-            message: "Error -> No se pudo eliminar el libro con ID = " + req.params.id,
+            message: "Error -> No se pudo eliminar el proyecto con ID = " + req.params.id,
             error: error.message
         });
     }

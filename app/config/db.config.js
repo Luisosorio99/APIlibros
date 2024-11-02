@@ -1,18 +1,17 @@
-
 const env = require('./env.js');
- 
+
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(env.database, env.username, env.password, {
   host: env.host,
   dialect: env.dialect,
-  dialectOptions:{
+  dialectOptions: {
     ssl: {
       require: true,
       rejectUnauthorized: false
     }
   },
   operatorsAliases: false,
- 
+
   pool: {
     max: env.max,
     min: env.pool.min,
@@ -26,5 +25,7 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.Libros = require('../models/libros.js')(sequelize, Sequelize);
+
+db.Proyectos = require('../models/proyectos.js')(sequelize, Sequelize);
+
 module.exports = db;

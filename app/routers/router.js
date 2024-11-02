@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const librosController = require('../controllers/libros.controller'); 
+const proyectosController = require('../controllers/proyectos.controller'); 
 
-
-router.get('/libros/obtener', librosController.retrieveAllLibros);
-router.post('/libros/crear', librosController.create);
-router.get('/libros/:id', librosController.getLibroById);
-router.put('/libros/actualizar/:id', librosController.updateById);
-router.delete('/libros/eliminar/:id', librosController.deleteById);
+router.get('/proyectos/obtener', proyectosController.retrieveAllProyectos);
+router.post('/proyectos/crear', proyectosController.create);
+router.get('/proyectos/:id', proyectosController.getProyectoById);
+router.put('/proyectos/actualizar/:id', proyectosController.updateById);
+router.delete('/proyectos/eliminar/:id', proyectosController.deleteById);
 
 module.exports = router;

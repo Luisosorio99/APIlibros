@@ -1,35 +1,47 @@
 module.exports = (sequelize, Sequelize) => {
-    const Libros = sequelize.define('libros', {
-        Id_libro: {
+    const Proyectos = sequelize.define('proyectos', {
+        id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true 
         },
-        Titulo: {
-            type: Sequelize.STRING(100) 
+        titulo: {
+            type: Sequelize.STRING(100), 
+            allowNull: false 
         },
-        Id_autor: {
-            type: Sequelize.INTEGER 
+        descripcion: {
+            type: Sequelize.TEXT,
+            allowNull: true 
         },
-        Isbn: {
-            type: Sequelize.STRING(13) 
+        completada: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false 
         },
-        Editorial: {
-            type: Sequelize.STRING(50) 
+        fecha_creacion: {
+            type: Sequelize.DATE,
+            defaultValue: Sequelize.NOW 
         },
-        Año_publicacion: {
-            type: Sequelize.DATE 
+        fecha_vencimiento: {
+            type: Sequelize.DATE,
+            allowNull: true 
         },
-        Categoría: {
-            type: Sequelize.STRING(50) 
+        prioridad: {
+            type: Sequelize.ENUM('baja', 'media', 'alta'),
+            defaultValue: 'media'
         },
-        Cantidad_disponible: {
-            type: Sequelize.INTEGER 
+        asignado_a: {
+            type: Sequelize.STRING(100),
+            allowNull: true 
         },
-        Ubicacion: {
-            type: Sequelize.STRING(100) 
+        categoria: {
+            type: Sequelize.STRING(50),
+            allowNull: true 
+        },
+        costo_proyecto: {
+            type: Sequelize.DECIMAL(10, 2),
+            allowNull: true 
         }
     });
     
-    return Libros;
+    return Proyectos;
 };
